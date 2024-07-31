@@ -1,0 +1,40 @@
+{
+    // Enhance IntelliSense with type checking and auto-suggestions.
+    // You need to install the Pylance extension for this to work.
+    "python.languageServer": "Pylance",
+
+    // This allows VSCode to resolve custom Python libraries in the project.
+    // You need to install the Pylance extension for this to work.
+    "python.analysis.extraPaths": [
+        //"${workspaceFolder}/path/to/my/library/",
+    ],
+
+    "[python]": {
+        // Use the official Microsoft Python extension's formatter (Black, by
+        // default). You need to install the Black Formatter extension for this
+        // to work.
+        "editor.defaultFormatter": "ms-python.black-formatter",
+
+        // Organize imports on save
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        },
+
+        // Automatically lint and show linting errors (assuming pylint is your
+        // linter of choice). You need to install the Pylint extension for this
+        // to work.
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": false
+    },
+
+    // If you wish to use 'isort' for sorting and organizing your imports, ensure
+    // you have that extension installed and enable the settings below.
+    "isort.args": ["--profile", "black"],  // 'black' profile makes isort compatible with Black
+
+    // To have an improved terminal experience
+    "terminal.integrated.shell.windows": "cmd.exe",
+    "terminal.integrated.env.windows": {
+        "PYTHONUNBUFFERED": "1",  // For real-time output in terminal
+        "PYTHONIOENCODING": "UTF-8"
+    }
+}
