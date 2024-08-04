@@ -1,6 +1,6 @@
 
-# la-wordcloud-gen
-Word Cloud Generator for LearnAnything
+# aws-wordcloud
+Word Cloud Generator using AWS Cloud
 
 # Welcome to your CDK Python project!
 
