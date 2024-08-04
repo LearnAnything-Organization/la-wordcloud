@@ -16,7 +16,7 @@ from aws_cdk import aws_lambda
 from constructs import Construct
 
 
-class LAWordCloudStack(Stack):
+class AWSWordCloudStack(Stack):
     """
     This class defines the structure, resource and artifacts of the la-wordcloud
     service through AWS CDK Constructs.

@@ -11,8 +11,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "packages"))
 
 import base64
 
-from la_common.base_lambda_handler import BaseLambdaHandler
-from la_common.la_utils import log_object
+from app_common.base_lambda_handler import BaseLambdaHandler
+from app_common.app_utils import log_object
 from wordcloud import WordCloud
 
 
@@ -47,8 +47,8 @@ class WordCloudHandler(BaseLambdaHandler):
 
         # Generates the wordcloud image and reads the contents of the resulting
         # file
-        object_name = self.body["object_name"]
-        text = self.body["text"]
+        object_name = self.body.get("object_name", "wordcloud.jpg")
+        text = self.body.get("text", "Word1 Word2 Word3")
         (wc, wc_path) = self.generate_wordcloud(object_name, text)
 
         with open(wc_path, mode="rb") as wc_file:
@@ -73,7 +73,7 @@ class WordCloudHandler(BaseLambdaHandler):
 def lambda_handler(event, context):
     """
     This method handles lambda function invocations coming from AWS. Please
-    refer to the ``la_wordcloud_stack.py`` module to find out more about the
+    refer to the ``aws_wordcloud_stack.py`` module to find out more about the
     configuration of the associated lambda function.
     """
 
