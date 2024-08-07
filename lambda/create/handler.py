@@ -10,9 +10,10 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), "packages"))
 
 import base64
+from io import BytesIO
 
-from app_common.base_lambda_handler import BaseLambdaHandler
 from app_common.app_utils import log_object
+from app_common.base_lambda_handler import BaseLambdaHandler
 from wordcloud import WordCloud
 
 
@@ -21,11 +22,10 @@ class WordCloudHandler(BaseLambdaHandler):
     This class is responsible for generating wordcloud images.
     """
 
-    def generate_wordcloud(self, object_name, text: str = "Word1 Word2 Word3"):
+    def generate_wordcloud(self, text: str):
         """
-        Generate a wordcloud image.
+        Generates a wordcloud image.
         """
-        full_local_path = BaseLambdaHandler.get_temp_dir_path() + object_name
 
         wc = WordCloud(
             width=400,
@@ -36,26 +36,24 @@ class WordCloudHandler(BaseLambdaHandler):
             max_words=100,
         )
         wc.generate(text)
-        wc.to_file(full_local_path)
-        # return wc.to_image()
-        return (wc, full_local_path)
+        img = wc.to_image()
+
+        return (wc, img)
 
     def handle(self):
         """
         Given a text, generates a wordcloud image of it.
         """
 
-        # Generates the wordcloud image and reads the contents of the resulting
-        # file
-        object_name = self.body.get("object_name", "wordcloud.jpg")
+        # Generates the wordcloud image, saves its contents to a memory buffer
+        # in PNG format and finally encodes the PNG content in base64
         text = self.body.get("text", "Word1 Word2 Word3")
-        (wc, wc_path) = self.generate_wordcloud(object_name, text)
+        (wc, img) = self.generate_wordcloud(text)
 
-        with open(wc_path, mode="rb") as wc_file:
-            wc_bytes = wc_file.read()
+        bio = BytesIO()
+        img.save(bio, format="png")
 
-        # Encodes the image in base64
-        image_base64 = base64.b64encode(wc_bytes).decode("utf-8")
+        img_base64 = base64.b64encode(bio.getvalue()).decode("utf-8")
 
         # Returns the generated wordcloud image
         return {
@@ -65,7 +63,7 @@ class WordCloudHandler(BaseLambdaHandler):
                 "Content-Disposition": 'inline; filename="wordcloud.png"',
                 "Content-Transfer-Encoding": "base64",
             },
-            "body": image_base64,
+            "body": img_base64,
             "isBase64Encoded": True,
         }
 
